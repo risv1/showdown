@@ -1,16 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import {
-  FiArrowRight,
-  FiCalendar,
-  FiMail,
-  FiPlus,
-  FiShield,
-  FiTarget,
-  FiTrendingUp,
-  FiUser,
-  FiZap,
-} from "react-icons/fi";
+import { FiArrowRight, FiCalendar, FiMail, FiPlus, FiShield, FiUser } from "react-icons/fi";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { usePokemon } from "../../hooks/pokemon";
 import { useTournaments } from "../../hooks/tournaments";
@@ -99,19 +89,6 @@ export default function DashboardHome() {
       fetchTournaments();
     }
   }, [userData, loading]);
-
-  const stats = {
-    totalBattles: tournaments.reduce((acc, t) => acc + t.wins + t.losses, 0),
-    winRate:
-      tournaments.length > 0
-        ? Math.round(
-            (tournaments.reduce((acc, t) => acc + t.wins, 0) /
-              tournaments.reduce((acc, t) => acc + t.wins + t.losses, 1)) *
-              100
-          )
-        : 0,
-    currentStreak: 5,
-  };
 
   const getTimeOfDay = () => {
     const hour = new Date().getHours();
@@ -408,52 +385,6 @@ export default function DashboardHome() {
           <p className="text-neutral-400">{formatCurrentDate()}</p>
         </div>
       </motion.div>
-
-      {userData && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
-        >
-          <div className="grid grid-cols-3 gap-6">
-            <div className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6 hover:border-red-500/30 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-3xl font-bold text-white">{stats.totalBattles}</p>
-                  <p className="text-neutral-400 text-sm">Total Battles</p>
-                </div>
-                <div className="w-12 h-12 rounded-full border border-red-500/30 flex items-center justify-center">
-                  <FiTrendingUp className="w-6 h-6 text-red-400" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6 hover:border-red-500/30 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-3xl font-bold text-white">{stats.winRate}%</p>
-                  <p className="text-neutral-400 text-sm">Win Rate</p>
-                </div>
-                <div className="w-12 h-12 rounded-full border border-red-500/30 flex items-center justify-center">
-                  <FiTarget className="w-6 h-6 text-red-400" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6 hover:border-red-500/30 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-3xl font-bold text-white">{stats.currentStreak}</p>
-                  <p className="text-neutral-400 text-sm">Win Streak</p>
-                </div>
-                <div className="w-12 h-12 rounded-full border border-red-500/30 flex items-center justify-center">
-                  <FiZap className="w-6 h-6 text-red-400" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       {userData && renderTournamentSection()}
     </div>
