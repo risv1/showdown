@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router";
 import AuthForm from "../components/auth/AuthForm";
 import InfoCard from "../components/auth/InfoCard";
 import { useAuth } from "../hooks/auth";
@@ -12,7 +13,14 @@ export default function Auth() {
     password: "",
   });
 
-  const { register, login, isLoading, error, clearError } = useAuth();
+  const { register, login, isLoading, error, clearError, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (error) {
