@@ -12,6 +12,8 @@ import {
   FiZap,
 } from "react-icons/fi";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { usePokemon } from "../../hooks/pokemon";
+import { useTournaments } from "../../hooks/tournaments";
 
 interface UserData {
   username: string;
@@ -20,78 +22,41 @@ interface UserData {
   group: number;
 }
 
-interface Tournament {
-  id: string;
-  name: string;
-  format: string;
-  wins: number;
-  losses: number;
-  points: number;
-}
-
-interface HomeData {
-  tournaments: Tournament[];
-  team: string[];
-  stats: {
-    totalBattles: number;
-    winRate: number;
-    currentStreak: number;
-  };
-}
-
 interface ContextType {
   userData: UserData | null;
   loading: boolean;
 }
 
+interface Tournament {
+  id: number;
+  name: string;
+  format: string;
+  description: string;
+  maxPlayers: number;
+  currentPlayers: number;
+  creator: number;
+  isStarted: boolean;
+  joinsDisabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+  wins: number;
+  losses: number;
+  points: number;
+  pokemonTeam?: string[];
+  stages?: Array<{
+    name: string;
+    playersSelected: number;
+  }>;
+  isParticipating?: boolean;
+}
+
 export default function DashboardHome() {
   const { userData, loading } = useOutletContext<ContextType>();
+  const { getUserTournaments, isLoading } = useTournaments();
+  const { formatForDisplay } = usePokemon();
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
-
-  const homeData: HomeData = {
-    tournaments: [
-      {
-        id: "summer-championship-2025",
-        name: "Summer Championship 2025",
-        format: "OU Singles",
-        wins: 12,
-        losses: 3,
-        points: 4,
-      },
-      {
-        id: "winter-cup-2025",
-        name: "Winter Cup 2025",
-        format: "VGC Doubles",
-        wins: 8,
-        losses: 2,
-        points: 6,
-      },
-      {
-        id: "spring-masters-2025",
-        name: "Spring Masters 2025",
-        format: "UU Singles",
-        wins: 5,
-        losses: 1,
-        points: 8,
-      },
-    ],
-    team: [
-      "pikachu",
-      "charizard",
-      "blastoise",
-      "venusaur",
-      "dragonite",
-      "mewtwo",
-      "necrozma",
-      "chansey",
-    ],
-    stats: {
-      totalBattles: 47,
-      winRate: 80,
-      currentStreak: 5,
-    },
-  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -100,6 +65,53 @@ export default function DashboardHome() {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      try {
+        const userTournaments = await getUserTournaments();
+        const transformedTournaments: Tournament[] = userTournaments.map((t) => ({
+          id: t.id,
+          name: t.name,
+          format: t.format,
+          description: t.description || "",
+          maxPlayers: t.maxPlayers || 0,
+          currentPlayers: t.currentPlayers || 0,
+          creator: t.creator || 0,
+          isStarted: t.isStarted || false,
+          joinsDisabled: t.joinsDisabled || false,
+          createdAt: t.createdAt || "",
+          updatedAt: t.updatedAt || "",
+          wins: t.wins || 0,
+          losses: t.losses || 0,
+          points: t.points || 0,
+          pokemonTeam: t.pokemonTeam || [],
+          stages: t.stages || [],
+          isParticipating: t.isParticipating,
+        }));
+        setTournaments(transformedTournaments);
+      } catch (error) {
+        console.error("Failed to fetch tournaments:", error);
+      }
+    };
+
+    if (userData && !loading) {
+      fetchTournaments();
+    }
+  }, [userData, loading]);
+
+  const stats = {
+    totalBattles: tournaments.reduce((acc, t) => acc + t.wins + t.losses, 0),
+    winRate:
+      tournaments.length > 0
+        ? Math.round(
+            (tournaments.reduce((acc, t) => acc + t.wins, 0) /
+              tournaments.reduce((acc, t) => acc + t.wins + t.losses, 1)) *
+              100
+          )
+        : 0,
+    currentStreak: 5,
+  };
 
   const getTimeOfDay = () => {
     const hour = new Date().getHours();
@@ -138,14 +150,6 @@ export default function DashboardHome() {
     });
   };
 
-  const formatPokemonName = (pokemonName: string) => {
-    return pokemonName.toLowerCase().replace(/\s+/g, "");
-  };
-
-  const capitalizeName = (name: string) => {
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  };
-
   const handleGoToTournament = (tournamentId: string) => {
     navigate(`/dashboard/tournaments/${tournamentId}`);
   };
@@ -169,7 +173,22 @@ export default function DashboardHome() {
   }
 
   const renderTournamentSection = () => {
-    const tournamentCount = homeData.tournaments.length;
+    if (isLoading) {
+      return (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-8"
+        >
+          <div className="text-center py-12">
+            <div className="w-8 h-8 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-neutral-400">Loading tournaments...</p>
+          </div>
+        </motion.div>
+      );
+    }
+
+    const tournamentCount = tournaments.length;
 
     if (tournamentCount === 0) {
       return (
@@ -208,7 +227,7 @@ export default function DashboardHome() {
         </motion.div>
       );
     } else if (tournamentCount === 1) {
-      const tournament = homeData.tournaments[0];
+      const tournament = tournaments[0];
       return (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -240,7 +259,7 @@ export default function DashboardHome() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => handleGoToTournament(tournament.id)}
+              onClick={() => handleGoToTournament(tournament.id.toString())}
               className="flex items-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 hover:border-red-500 rounded-xl text-red-400 hover:text-red-300 transition-all duration-200"
             >
               View Tournament
@@ -248,42 +267,42 @@ export default function DashboardHome() {
             </motion.button>
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <FiShield className="w-5 h-5 text-red-400" />
-              Your Team
-            </h3>
-            <div className="grid grid-cols-6 gap-6">
-              {homeData.team.map((pokemon, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="text-center group cursor-pointer"
-                >
-                  <div className="w-24 h-24 mx-auto mb-3 relative border border-neutral-700/50 rounded-lg p-2 group-hover:border-red-500/30 transition-colors">
-                    <img
-                      src={`https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen7x/regular/${formatPokemonName(
-                        pokemon
-                      )}.png`}
-                      alt={pokemon}
-                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-200"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center border-2 border-neutral-900">
-                      <span className="text-xs font-bold text-white">{index + 1}</span>
+          {tournament.pokemonTeam && tournament.pokemonTeam.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <FiShield className="w-5 h-5 text-red-400" />
+                Your Team
+              </h3>
+              <div className="grid grid-cols-6 gap-6">
+                {tournament.pokemonTeam.map((pokemon, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="text-center group cursor-pointer"
+                  >
+                    <div className="w-24 h-24 mx-auto mb-3 relative border border-neutral-700/50 rounded-lg p-2 group-hover:border-red-500/30 transition-colors">
+                      <img
+                        src={`https://raw.githubusercontent.com/msikma/pokesprite/master/pokemon-gen8/regular/${pokemon}.png`}
+                        alt={formatForDisplay(pokemon)}
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-200"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center border-2 border-neutral-900">
+                        <span className="text-xs font-bold text-white">{index + 1}</span>
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-sm text-neutral-400 group-hover:text-white transition-colors font-medium">
-                    {capitalizeName(pokemon)}
-                  </p>
-                </motion.div>
-              ))}
+                    <p className="text-sm text-neutral-400 group-hover:text-white transition-colors font-medium">
+                      {formatForDisplay(pokemon)}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </motion.div>
       );
     } else {
@@ -308,14 +327,14 @@ export default function DashboardHome() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {homeData.tournaments.map((tournament, index) => (
+            {tournaments.map((tournament, index) => (
               <motion.div
                 key={tournament.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
                 className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6 hover:border-red-500/30 transition-all duration-300 cursor-pointer"
-                onClick={() => handleGoToTournament(tournament.id)}
+                onClick={() => handleGoToTournament(tournament.id.toString())}
               >
                 <div className="space-y-4">
                   <div>
@@ -400,7 +419,7 @@ export default function DashboardHome() {
             <div className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6 hover:border-red-500/30 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold text-white">{homeData.stats.totalBattles}</p>
+                  <p className="text-3xl font-bold text-white">{stats.totalBattles}</p>
                   <p className="text-neutral-400 text-sm">Total Battles</p>
                 </div>
                 <div className="w-12 h-12 rounded-full border border-red-500/30 flex items-center justify-center">
@@ -412,7 +431,7 @@ export default function DashboardHome() {
             <div className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6 hover:border-red-500/30 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold text-white">{homeData.stats.winRate}%</p>
+                  <p className="text-3xl font-bold text-white">{stats.winRate}%</p>
                   <p className="text-neutral-400 text-sm">Win Rate</p>
                 </div>
                 <div className="w-12 h-12 rounded-full border border-red-500/30 flex items-center justify-center">
@@ -424,7 +443,7 @@ export default function DashboardHome() {
             <div className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6 hover:border-red-500/30 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold text-white">{homeData.stats.currentStreak}</p>
+                  <p className="text-3xl font-bold text-white">{stats.currentStreak}</p>
                   <p className="text-neutral-400 text-sm">Win Streak</p>
                 </div>
                 <div className="w-12 h-12 rounded-full border border-red-500/30 flex items-center justify-center">

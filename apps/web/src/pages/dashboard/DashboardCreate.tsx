@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiCheck, FiPlus, FiSave, FiTrash2, FiX } from "react-icons/fi";
+import { useTournaments } from "../../hooks/tournaments";
 
 interface Stage {
   id: string;
@@ -18,6 +19,8 @@ export default function DashboardCreate() {
 
   const [stages, setStages] = useState<Stage[]>([{ id: "1", name: "Round 1", playersSelected: 8 }]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const { createTournament, isLoading } = useTournaments();
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -49,9 +52,32 @@ export default function DashboardCreate() {
     setShowConfirmation(true);
   };
 
-  const confirmSubmit = () => {
-    console.log("Tournament Data:", { ...formData, stages });
-    setShowConfirmation(false);
+  const confirmSubmit = async () => {
+    try {
+      const tournamentData = {
+        name: formData.tournamentName,
+        format: formData.format,
+        description: formData.description,
+        maxPlayers: formData.totalPlayers,
+        stages: stages.map((stage) => ({
+          name: stage.name,
+          playersSelected: stage.playersSelected,
+        })),
+      };
+
+      await createTournament(tournamentData);
+      setShowConfirmation(false);
+
+      setFormData({
+        tournamentName: "",
+        totalPlayers: 16,
+        format: "",
+        description: "",
+      });
+      setStages([{ id: "1", name: "Round 1", playersSelected: 8 }]);
+    } catch (error) {
+      console.error("Failed to create tournament:", error);
+    }
   };
 
   const cancelSubmit = () => {
@@ -86,6 +112,7 @@ export default function DashboardCreate() {
                 className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-lg text-white placeholder-neutral-400 focus:border-red-500/50 focus:outline-none transition-colors"
                 placeholder="Enter tournament name"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -98,6 +125,7 @@ export default function DashboardCreate() {
                 className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-lg text-white placeholder-neutral-400 focus:border-red-500/50 focus:outline-none transition-colors"
                 min="2"
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -111,6 +139,7 @@ export default function DashboardCreate() {
               className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-lg text-white placeholder-neutral-400 focus:border-red-500/50 focus:outline-none transition-colors"
               placeholder="e.g., OU Singles, VGC Doubles, etc."
               required
+              disabled={isLoading}
             />
           </div>
 
@@ -122,6 +151,7 @@ export default function DashboardCreate() {
               className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-lg text-white placeholder-neutral-400 focus:border-red-500/50 focus:outline-none transition-colors resize-none"
               rows={4}
               placeholder="Describe your tournament rules, prizes, and other details..."
+              disabled={isLoading}
             />
           </div>
 
@@ -133,7 +163,8 @@ export default function DashboardCreate() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={addStage}
-                className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-lg text-red-400 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-lg text-red-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading}
               >
                 <FiPlus className="w-4 h-4" />
                 Add Stage
@@ -157,6 +188,7 @@ export default function DashboardCreate() {
                         onChange={(e) => updateStage(stage.id, "name", e.target.value)}
                         className="w-full px-3 py-2 bg-neutral-700/50 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:border-red-500/50 focus:outline-none transition-colors"
                         placeholder="Stage name"
+                        disabled={isLoading}
                       />
                     </div>
                     <div className="w-48">
@@ -173,6 +205,7 @@ export default function DashboardCreate() {
                           className="w-20 px-3 py-2 bg-neutral-700/50 border border-neutral-600 rounded-lg text-white focus:border-red-500/50 focus:outline-none transition-colors"
                           min="1"
                           max={formData.totalPlayers}
+                          disabled={isLoading}
                         />
                       </div>
                     </div>
@@ -182,7 +215,8 @@ export default function DashboardCreate() {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => removeStage(stage.id)}
-                        className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-colors"
+                        className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isLoading}
                       >
                         <FiTrash2 className="w-4 h-4" />
                       </motion.button>
@@ -196,12 +230,13 @@ export default function DashboardCreate() {
           <div className="flex justify-end pt-6">
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex items-center gap-3 px-8 py-4 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 hover:border-red-500 rounded-xl text-red-400 hover:text-red-300 transition-all duration-200 font-semibold"
+              whileHover={{ scale: isLoading ? 1 : 1.02 }}
+              whileTap={{ scale: isLoading ? 1 : 0.98 }}
+              className="flex items-center gap-3 px-8 py-4 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 hover:border-red-500 rounded-xl text-red-400 hover:text-red-300 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
             >
               <FiSave className="w-5 h-5" />
-              Create Tournament
+              {isLoading ? "Creating..." : "Create Tournament"}
             </motion.button>
           </div>
         </form>
@@ -240,19 +275,21 @@ export default function DashboardCreate() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={cancelSubmit}
-                className="flex items-center gap-2 px-4 py-2 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 rounded-lg text-neutral-300 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-neutral-700/50 hover:bg-neutral-700 border border-neutral-600 rounded-lg text-neutral-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading}
               >
                 <FiX className="w-4 h-4" />
                 Cancel
               </motion.button>
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                whileTap={{ scale: isLoading ? 1 : 0.98 }}
                 onClick={confirmSubmit}
-                className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 hover:border-red-500 rounded-lg text-red-400 hover:text-red-300 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 hover:border-red-500 rounded-lg text-red-400 hover:text-red-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading}
               >
                 <FiCheck className="w-4 h-4" />
-                Confirm
+                {isLoading ? "Creating..." : "Confirm"}
               </motion.button>
             </div>
           </motion.div>

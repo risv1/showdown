@@ -1,10 +1,14 @@
 import { motion } from "framer-motion";
-import { FiHome, FiLogOut, FiPlus, FiSettings, FiUser, FiUsers } from "react-icons/fi";
+import { FiHome, FiLogOut, FiPlus, FiUser, FiUsers } from "react-icons/fi";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "../../hooks/auth";
 
 interface UserData {
+  id: number;
   username: string;
   email: string;
+  showdownJoinDate?: string;
+  createdAt: string;
 }
 
 interface SidebarProps {
@@ -13,16 +17,16 @@ interface SidebarProps {
 
 export default function Sidebar({ userData }: SidebarProps) {
   const location = useLocation();
+  const { logout } = useAuth();
 
   const navItems = [
     { icon: FiHome, label: "Dashboard", path: "/dashboard" },
     { icon: FiPlus, label: "Create", path: "/dashboard/create" },
     { icon: FiUsers, label: "Join", path: "/dashboard/join" },
-    { icon: FiSettings, label: "Settings", path: "/dashboard/settings" },
   ];
 
   const handleLogout = () => {
-    console.log("Logging out...");
+    logout();
   };
 
   const isActiveRoute = (path: string) => {

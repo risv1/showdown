@@ -16,9 +16,8 @@ Organize epic tournaments, manage teams, and track your competitive journey. Whe
 
 - 🏆 Tournament bracket management
 - 👥 Team organization and rosters
-- 📊 Performance tracking and statistics
+- 📊 Performance and statistics
 - 🎮 Multi-game support
-- 📱 Real-time updates and notifications
 
 Ready to prove who's the best? Let the showdown begin!
 

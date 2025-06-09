@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaSpinner, FaUser } from "react-icons/fa";
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -11,6 +11,8 @@ interface AuthFormProps {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
   onToggleMode: () => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 export default function AuthForm({
@@ -19,6 +21,8 @@ export default function AuthForm({
   onInputChange,
   onSubmit,
   onToggleMode,
+  isLoading = false,
+  error,
 }: AuthFormProps) {
   return (
     <motion.div
@@ -42,6 +46,16 @@ export default function AuthForm({
           </p>
         </motion.div>
 
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg"
+          >
+            <p className="text-red-400 text-sm text-center">{error}</p>
+          </motion.div>
+        )}
+
         <form onSubmit={onSubmit} className="space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -56,7 +70,8 @@ export default function AuthForm({
                 name="username"
                 value={formData.username}
                 onChange={onInputChange}
-                className="w-full pl-10 pr-4 py-3 bg-neutral-800/50 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:border-red-500 transition-colors"
+                disabled={isLoading}
+                className="w-full pl-10 pr-4 py-3 bg-neutral-800/50 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:border-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Enter your username"
                 required
               />
@@ -77,7 +92,8 @@ export default function AuthForm({
                   name="email"
                   value={formData.email}
                   onChange={onInputChange}
-                  className="w-full pl-10 pr-4 py-3 bg-neutral-800/50 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:border-red-500 transition-colors"
+                  disabled={isLoading}
+                  className="w-full pl-10 pr-4 py-3 bg-neutral-800/50 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:border-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Enter your email"
                   required
                 />
@@ -98,7 +114,8 @@ export default function AuthForm({
                 name="password"
                 value={formData.password}
                 onChange={onInputChange}
-                className="w-full pl-10 pr-4 py-3 bg-neutral-800/50 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:border-red-500 transition-colors"
+                disabled={isLoading}
+                className="w-full pl-10 pr-4 py-3 bg-neutral-800/50 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:border-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Enter your password"
                 required
               />
@@ -109,12 +126,14 @@ export default function AuthForm({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: isLogin ? 0.5 : 0.6, duration: 0.6 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: isLoading ? 1 : 1.02 }}
+            whileTap={{ scale: isLoading ? 1 : 0.98 }}
             type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+            disabled={isLoading}
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-600/50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
-            {isLogin ? "Sign In" : "Create Account"}
+            {isLoading && <FaSpinner className="animate-spin" />}
+            {isLoading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
           </motion.button>
         </form>
 
@@ -128,7 +147,8 @@ export default function AuthForm({
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
             <button
               onClick={onToggleMode}
-              className="text-red-500 hover:text-red-400 font-medium transition-colors"
+              disabled={isLoading}
+              className="text-red-500 hover:text-red-400 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLogin ? "Sign Up" : "Sign In"}
             </button>

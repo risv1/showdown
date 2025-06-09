@@ -5,6 +5,8 @@ import { handle } from "hono/vercel";
 
 import { env } from "../config/env";
 import { authRoutes } from "./routes/auth.routes";
+import { matchesRoutes } from "./routes/matches.routes";
+import { tournamentRoutes } from "./routes/tournament.routes";
 
 export const config = {
   runtime: "edge",
@@ -21,6 +23,8 @@ app.use(
 );
 
 app.route("/auth", authRoutes);
+app.route("/tournaments", tournamentRoutes);
+app.route("/matches", matchesRoutes);
 
 app.get("/health", (c) => {
   return c.json({ status: "OK", timestamp: new Date().toISOString() });

@@ -1,0 +1,14 @@
+include:
+  - ./compose/postgres.yml
+
+services: {}
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  showdown-network:
+    driver: bridge
