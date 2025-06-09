@@ -11,6 +11,8 @@ authRoutes.post("/login", (c) => authController.login(c));
 authRoutes.use("/*", authMiddleware);
 authRoutes.get("/session", (c) => authController.checkSession(c));
 authRoutes.get("/profile", (c) => authController.getProfile(c));
-authRoutes.post("/refresh-showdown", (c) => authController.refreshShowdownData(c));
+authRoutes.post("/refresh-showdown", (c) =>
+	authController.refreshShowdownData(c),
+);
 
 export { authRoutes };

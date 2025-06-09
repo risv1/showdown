@@ -2,25 +2,32 @@
 
 <img src="blobs/pokeball.png" alt="Showdown Logo" width="250" height="200" />
 
-# Playing Showdown with the Bois
+# Showdown
 
 </div>
 
-_The ultimate tournament management platform for competitive gaming_
+_Dynamic tournament management platform for Pokemon battles_
 
 ---
 
-Organize epic tournaments, manage teams, and track your competitive journey. Whether you're running local gaming sessions or large-scale esports events, Showdown brings players together for unforgettable battles.
+Create and manage Pokemon tournaments with ease. Built for competitive players who want to organize epic battles, track team performance, and export comprehensive results.
 
 **Features:**
 
-- 🏆 Tournament bracket management
-- 👥 Team organization and rosters
-- 📊 Performance and statistics
-- 🎮 Multi-game support
+- 🏆 **Dynamic Tournament Manager** - Create custom brackets with automated progression
+- 👥 **Custom Teams** - Build and organize teams with player management
+- 📊 **Staged Tournaments** - Multi-phase events with custom progression rules
+- 🏅 **Leaderboards** - Track player performance across tournaments
+- 📥 **Downloadable Results** - Export brackets and results in multiple formats
+- 🎮 **Pokemon Integration** - Built specifically for Pokemon tournament management
 
-Ready to prove who's the best? Let the showdown begin!
+**Built With:**
+
+- Data from [Smogon Pokemon Showdown](https://pokemonshowdown.com/)
+- Sprites from [PokeSprite](https://github.com/msikma/pokesprite)
+
+Ready to prove who's the best trainer? Let the showdown begin!
 
 ---
 
-[MIT](LICENSE) © 2025 Rishi Viswanathan
+[MIT](LICENSE) © 2025 [risv1](https://github.com/risv1)

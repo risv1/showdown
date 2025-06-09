@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FaChartLine, FaFire, FaGamepad, FaStar, FaTrophy, FaUsers } from "react-icons/fa";
+import { FaBolt, FaDownload, FaGamepad, FaLayerGroup, FaMedal, FaUsers } from "react-icons/fa";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -28,10 +28,10 @@ export default function Bento() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl font-bold text-white mb-4">
-            Everything You Need for <span className="text-red-500">Epic Battles</span>
+            Everything You Need for <span className="text-red-500">Epic Tournaments</span>
           </h2>
           <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-            Comprehensive tournament management with style and precision
+            Create dynamic tournaments with custom teams, staged brackets, and downloadable results
           </p>
         </motion.div>
 
@@ -45,17 +45,36 @@ export default function Bento() {
           <motion.div
             variants={itemVariants}
             whileHover={{ scale: 1.02, y: -5 }}
-            className="md:col-span-2 lg:row-span-2 bg-gradient-to-br from-neutral-900/70 to-neutral-800/70 backdrop-blur-sm rounded-2xl p-8 border border-neutral-700/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
+            className="md:col-span-2 lg:row-span-2 bg-gradient-to-br from-red-900/40 via-red-800/40 to-neutral-900/70 backdrop-blur-sm rounded-2xl p-8 border border-red-500/50 hover:border-red-400/70 transition-all duration-300 group cursor-pointer"
           >
             <div className="h-full flex flex-col">
-              <FaTrophy className="text-red-500 text-4xl mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-2xl font-bold text-white mb-4">Tournament Brackets</h3>
-              <p className="text-neutral-400 mb-6 flex-grow">
-                Create and manage professional tournament brackets with automated matchmaking,
-                real-time updates, and comprehensive scoring systems.
+              <div className="flex items-center gap-3 mb-4">
+                <FaBolt className="text-red-400 text-4xl group-hover:scale-110 transition-transform" />
+                <span className="bg-red-500/20 text-red-300 text-xs px-2 py-1 rounded-full border border-red-500/30">
+                  DYNAMIC
+                </span>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Dynamic Tournament Manager</h3>
+              <p className="text-neutral-300 mb-6 flex-grow">
+                Create and manage tournaments with flexible bracket systems. Support for various
+                tournament formats with automated progression and match tracking.
               </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-red-300 text-sm">
+                  <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                  Custom bracket generation
+                </div>
+                <div className="flex items-center gap-2 text-red-300 text-sm">
+                  <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                  Automated match progression
+                </div>
+                <div className="flex items-center gap-2 text-red-300 text-sm">
+                  <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                  Tournament result tracking
+                </div>
+              </div>
               <div className="flex items-center gap-2 text-red-400">
-                <span className="text-sm font-semibold">Learn More</span>
+                <span className="text-sm font-semibold">Start Tournament</span>
                 <motion.div
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
@@ -69,12 +88,12 @@ export default function Bento() {
           <motion.div
             variants={itemVariants}
             whileHover={{ scale: 1.05, y: -5 }}
-            className="bg-gradient-to-br from-red-600/90 to-red-700/90 backdrop-blur-sm rounded-2xl p-6 border border-red-500/50 group cursor-pointer"
+            className="bg-gradient-to-br from-neutral-800/70 to-neutral-900/70 backdrop-blur-sm rounded-2xl p-6 border border-neutral-600/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
           >
-            <FaUsers className="text-white text-3xl mb-3 group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-bold text-white mb-2">Team Rosters</h3>
-            <p className="text-red-100 text-sm">
-              Organize teams and manage player lineups effortlessly.
+            <FaUsers className="text-red-400 text-3xl mb-3 group-hover:scale-110 transition-transform" />
+            <h3 className="text-xl font-bold text-white mb-2">Custom Teams</h3>
+            <p className="text-neutral-400 text-sm">
+              Build and organize teams with player management and roster tracking.
             </p>
           </motion.div>
 
@@ -83,24 +102,24 @@ export default function Bento() {
             whileHover={{ scale: 1.05, y: -5 }}
             className="bg-gradient-to-br from-neutral-800/70 to-neutral-900/70 backdrop-blur-sm rounded-2xl p-6 border border-neutral-600/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
           >
-            <FaChartLine className="text-red-400 text-3xl mb-3 group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-bold text-white mb-2">Analytics</h3>
+            <FaLayerGroup className="text-red-400 text-3xl mb-3 group-hover:scale-110 transition-transform" />
+            <h3 className="text-xl font-bold text-white mb-2">Staged Events</h3>
             <p className="text-neutral-400 text-sm">
-              Track performance and statistics in real-time.
+              Multi-phase tournaments with custom stages and progression rules.
             </p>
           </motion.div>
 
           <motion.div
             variants={itemVariants}
             whileHover={{ scale: 1.02, y: -5 }}
-            className="md:col-span-2 bg-gradient-to-r from-neutral-900/70 via-red-950/70 to-neutral-900/70 backdrop-blur-sm rounded-2xl p-6 border border-neutral-700/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
+            className="md:col-span-2 bg-gradient-to-r from-neutral-900/70 to-neutral-950/70 backdrop-blur-sm rounded-2xl p-6 border border-neutral-700/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
           >
             <div className="flex items-center gap-4">
-              <FaGamepad className="text-red-500 text-3xl group-hover:scale-110 transition-transform" />
+              <FaMedal className="text-red-400 text-3xl group-hover:scale-110 transition-transform" />
               <div>
-                <h3 className="text-xl font-bold text-white mb-1">Multi-Game Support</h3>
+                <h3 className="text-xl font-bold text-white mb-1">Tournament Leaderboards</h3>
                 <p className="text-neutral-400 text-sm">
-                  Support for Pokemon, Smash Bros, and more competitive games
+                  Track player performance and rankings across tournaments
                 </p>
               </div>
             </div>
@@ -111,20 +130,22 @@ export default function Bento() {
             whileHover={{ scale: 1.05, y: -5 }}
             className="bg-gradient-to-br from-neutral-800/70 to-neutral-900/70 backdrop-blur-sm rounded-2xl p-6 border border-neutral-600/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
           >
-            <FaStar className="text-yellow-400 text-3xl mb-3 group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-bold text-white mb-2">Rankings</h3>
-            <p className="text-neutral-400 text-sm">Global leaderboards and player rankings.</p>
+            <FaDownload className="text-red-400 text-3xl mb-3 group-hover:scale-110 transition-transform" />
+            <h3 className="text-xl font-bold text-white mb-2">Export Results</h3>
+            <p className="text-neutral-400 text-sm">
+              Download tournament brackets and results in multiple formats.
+            </p>
           </motion.div>
 
           <motion.div
             variants={itemVariants}
             whileHover={{ scale: 1.05, y: -5 }}
-            className="bg-gradient-to-br from-neutral-900/70 to-red-950/70 backdrop-blur-sm rounded-2xl p-6 border border-neutral-700/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
+            className="bg-gradient-to-br from-neutral-800/70 to-neutral-900/70 backdrop-blur-sm rounded-2xl p-6 border border-neutral-600/50 hover:border-red-500/50 transition-all duration-300 group cursor-pointer"
           >
-            <FaFire className="text-orange-400 text-3xl mb-3 group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-bold text-white mb-2">Live Events</h3>
+            <FaGamepad className="text-red-400 text-3xl mb-3 group-hover:scale-110 transition-transform" />
+            <h3 className="text-xl font-bold text-white mb-2">Pokemon Battles</h3>
             <p className="text-neutral-400 text-sm">
-              Stream and broadcast tournaments with real-time updates.
+              Built for Pokemon tournament management with comprehensive tracking.
             </p>
           </motion.div>
         </motion.div>

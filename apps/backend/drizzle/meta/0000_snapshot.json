@@ -1,684 +1,616 @@
 {
-  "id": "717087c3-7812-4120-b314-ec6d36ad3f36",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "public.match_pokemon": {
-      "name": "match_pokemon",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "match_id": {
-          "name": "match_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "player_id": {
-          "name": "player_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "pokemon_name": {
-          "name": "pokemon_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "match_pokemon_match_id_tour_matches_id_fk": {
-          "name": "match_pokemon_match_id_tour_matches_id_fk",
-          "tableFrom": "match_pokemon",
-          "tableTo": "tour_matches",
-          "columnsFrom": [
-            "match_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "match_pokemon_player_id_users_id_fk": {
-          "name": "match_pokemon_player_id_users_id_fk",
-          "tableFrom": "match_pokemon",
-          "tableTo": "users",
-          "columnsFrom": [
-            "player_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.team_pokemon": {
-      "name": "team_pokemon",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "team_id": {
-          "name": "team_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "stage_id": {
-          "name": "stage_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "pokemon_name": {
-          "name": "pokemon_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "team_pokemon_team_id_tour_teams_id_fk": {
-          "name": "team_pokemon_team_id_tour_teams_id_fk",
-          "tableFrom": "team_pokemon",
-          "tableTo": "tour_teams",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "team_pokemon_stage_id_tour_stages_id_fk": {
-          "name": "team_pokemon_stage_id_tour_stages_id_fk",
-          "tableFrom": "team_pokemon",
-          "tableTo": "tour_stages",
-          "columnsFrom": [
-            "stage_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.tour_matches": {
-      "name": "tour_matches",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "tournament_id": {
-          "name": "tournament_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "stage_id": {
-          "name": "stage_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "player1_id": {
-          "name": "player1_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "player2_id": {
-          "name": "player2_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "winner_id": {
-          "name": "winner_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "loser_id": {
-          "name": "loser_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "points_won": {
-          "name": "points_won",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "replay_url": {
-          "name": "replay_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tour_matches_tournament_id_tournaments_id_fk": {
-          "name": "tour_matches_tournament_id_tournaments_id_fk",
-          "tableFrom": "tour_matches",
-          "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "tour_matches_stage_id_tour_stages_id_fk": {
-          "name": "tour_matches_stage_id_tour_stages_id_fk",
-          "tableFrom": "tour_matches",
-          "tableTo": "tour_stages",
-          "columnsFrom": [
-            "stage_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "tour_matches_player1_id_users_id_fk": {
-          "name": "tour_matches_player1_id_users_id_fk",
-          "tableFrom": "tour_matches",
-          "tableTo": "users",
-          "columnsFrom": [
-            "player1_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "tour_matches_player2_id_users_id_fk": {
-          "name": "tour_matches_player2_id_users_id_fk",
-          "tableFrom": "tour_matches",
-          "tableTo": "users",
-          "columnsFrom": [
-            "player2_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "tour_matches_winner_id_users_id_fk": {
-          "name": "tour_matches_winner_id_users_id_fk",
-          "tableFrom": "tour_matches",
-          "tableTo": "users",
-          "columnsFrom": [
-            "winner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "tour_matches_loser_id_users_id_fk": {
-          "name": "tour_matches_loser_id_users_id_fk",
-          "tableFrom": "tour_matches",
-          "tableTo": "users",
-          "columnsFrom": [
-            "loser_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.tour_players": {
-      "name": "tour_players",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "tournament_id": {
-          "name": "tournament_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "joined_at": {
-          "name": "joined_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tour_players_tournament_id_tournaments_id_fk": {
-          "name": "tour_players_tournament_id_tournaments_id_fk",
-          "tableFrom": "tour_players",
-          "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "tour_players_user_id_users_id_fk": {
-          "name": "tour_players_user_id_users_id_fk",
-          "tableFrom": "tour_players",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.tour_stages": {
-      "name": "tour_stages",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "tournament_id": {
-          "name": "tournament_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "players_selected": {
-          "name": "players_selected",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "stage_order": {
-          "name": "stage_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tour_stages_tournament_id_tournaments_id_fk": {
-          "name": "tour_stages_tournament_id_tournaments_id_fk",
-          "tableFrom": "tour_stages",
-          "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.tour_teams": {
-      "name": "tour_teams",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "tournament_id": {
-          "name": "tournament_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tour_teams_tournament_id_tournaments_id_fk": {
-          "name": "tour_teams_tournament_id_tournaments_id_fk",
-          "tableFrom": "tour_teams",
-          "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "tour_teams_user_id_users_id_fk": {
-          "name": "tour_teams_user_id_users_id_fk",
-          "tableFrom": "tour_teams",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.tournaments": {
-      "name": "tournaments",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "creator": {
-          "name": "creator",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "format": {
-          "name": "format",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "max_players": {
-          "name": "max_players",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_started": {
-          "name": "is_started",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "is_ended": {
-          "name": "is_ended",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "joins_disabled": {
-          "name": "joins_disabled",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tournaments_creator_users_id_fk": {
-          "name": "tournaments_creator_users_id_fk",
-          "tableFrom": "tournaments",
-          "tableTo": "users",
-          "columnsFrom": [
-            "creator"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.users": {
-      "name": "users",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "username": {
-          "name": "username",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "password": {
-          "name": "password",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "showdown_join_date": {
-          "name": "showdown_join_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "users_username_unique": {
-          "name": "users_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
-        },
-        "users_email_unique": {
-          "name": "users_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    }
-  },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
+	"id": "717087c3-7812-4120-b314-ec6d36ad3f36",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.match_pokemon": {
+			"name": "match_pokemon",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"match_id": {
+					"name": "match_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"player_id": {
+					"name": "player_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"pokemon_name": {
+					"name": "pokemon_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"match_pokemon_match_id_tour_matches_id_fk": {
+					"name": "match_pokemon_match_id_tour_matches_id_fk",
+					"tableFrom": "match_pokemon",
+					"tableTo": "tour_matches",
+					"columnsFrom": ["match_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"match_pokemon_player_id_users_id_fk": {
+					"name": "match_pokemon_player_id_users_id_fk",
+					"tableFrom": "match_pokemon",
+					"tableTo": "users",
+					"columnsFrom": ["player_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.team_pokemon": {
+			"name": "team_pokemon",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"team_id": {
+					"name": "team_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"stage_id": {
+					"name": "stage_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"pokemon_name": {
+					"name": "pokemon_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"team_pokemon_team_id_tour_teams_id_fk": {
+					"name": "team_pokemon_team_id_tour_teams_id_fk",
+					"tableFrom": "team_pokemon",
+					"tableTo": "tour_teams",
+					"columnsFrom": ["team_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"team_pokemon_stage_id_tour_stages_id_fk": {
+					"name": "team_pokemon_stage_id_tour_stages_id_fk",
+					"tableFrom": "team_pokemon",
+					"tableTo": "tour_stages",
+					"columnsFrom": ["stage_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.tour_matches": {
+			"name": "tour_matches",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"tournament_id": {
+					"name": "tournament_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"stage_id": {
+					"name": "stage_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"player1_id": {
+					"name": "player1_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"player2_id": {
+					"name": "player2_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"winner_id": {
+					"name": "winner_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"loser_id": {
+					"name": "loser_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"points_won": {
+					"name": "points_won",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"replay_url": {
+					"name": "replay_url",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"tour_matches_tournament_id_tournaments_id_fk": {
+					"name": "tour_matches_tournament_id_tournaments_id_fk",
+					"tableFrom": "tour_matches",
+					"tableTo": "tournaments",
+					"columnsFrom": ["tournament_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"tour_matches_stage_id_tour_stages_id_fk": {
+					"name": "tour_matches_stage_id_tour_stages_id_fk",
+					"tableFrom": "tour_matches",
+					"tableTo": "tour_stages",
+					"columnsFrom": ["stage_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"tour_matches_player1_id_users_id_fk": {
+					"name": "tour_matches_player1_id_users_id_fk",
+					"tableFrom": "tour_matches",
+					"tableTo": "users",
+					"columnsFrom": ["player1_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"tour_matches_player2_id_users_id_fk": {
+					"name": "tour_matches_player2_id_users_id_fk",
+					"tableFrom": "tour_matches",
+					"tableTo": "users",
+					"columnsFrom": ["player2_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"tour_matches_winner_id_users_id_fk": {
+					"name": "tour_matches_winner_id_users_id_fk",
+					"tableFrom": "tour_matches",
+					"tableTo": "users",
+					"columnsFrom": ["winner_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"tour_matches_loser_id_users_id_fk": {
+					"name": "tour_matches_loser_id_users_id_fk",
+					"tableFrom": "tour_matches",
+					"tableTo": "users",
+					"columnsFrom": ["loser_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.tour_players": {
+			"name": "tour_players",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"tournament_id": {
+					"name": "tournament_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"joined_at": {
+					"name": "joined_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"tour_players_tournament_id_tournaments_id_fk": {
+					"name": "tour_players_tournament_id_tournaments_id_fk",
+					"tableFrom": "tour_players",
+					"tableTo": "tournaments",
+					"columnsFrom": ["tournament_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"tour_players_user_id_users_id_fk": {
+					"name": "tour_players_user_id_users_id_fk",
+					"tableFrom": "tour_players",
+					"tableTo": "users",
+					"columnsFrom": ["user_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.tour_stages": {
+			"name": "tour_stages",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"tournament_id": {
+					"name": "tournament_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"players_selected": {
+					"name": "players_selected",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"stage_order": {
+					"name": "stage_order",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"tour_stages_tournament_id_tournaments_id_fk": {
+					"name": "tour_stages_tournament_id_tournaments_id_fk",
+					"tableFrom": "tour_stages",
+					"tableTo": "tournaments",
+					"columnsFrom": ["tournament_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.tour_teams": {
+			"name": "tour_teams",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"tournament_id": {
+					"name": "tournament_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"tour_teams_tournament_id_tournaments_id_fk": {
+					"name": "tour_teams_tournament_id_tournaments_id_fk",
+					"tableFrom": "tour_teams",
+					"tableTo": "tournaments",
+					"columnsFrom": ["tournament_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"tour_teams_user_id_users_id_fk": {
+					"name": "tour_teams_user_id_users_id_fk",
+					"tableFrom": "tour_teams",
+					"tableTo": "users",
+					"columnsFrom": ["user_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.tournaments": {
+			"name": "tournaments",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"creator": {
+					"name": "creator",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"format": {
+					"name": "format",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"description": {
+					"name": "description",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"max_players": {
+					"name": "max_players",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"is_started": {
+					"name": "is_started",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": false
+				},
+				"is_ended": {
+					"name": "is_ended",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": false
+				},
+				"joins_disabled": {
+					"name": "joins_disabled",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"tournaments_creator_users_id_fk": {
+					"name": "tournaments_creator_users_id_fk",
+					"tableFrom": "tournaments",
+					"tableTo": "users",
+					"columnsFrom": ["creator"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.users": {
+			"name": "users",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"username": {
+					"name": "username",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"password": {
+					"name": "password",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"showdown_join_date": {
+					"name": "showdown_join_date",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"users_username_unique": {
+					"name": "users_username_unique",
+					"nullsNotDistinct": false,
+					"columns": ["username"]
+				},
+				"users_email_unique": {
+					"name": "users_email_unique",
+					"nullsNotDistinct": false,
+					"columns": ["email"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
 }

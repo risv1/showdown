@@ -9,17 +9,17 @@ import { matchesRoutes } from "./routes/matches.routes";
 import { tournamentRoutes } from "./routes/tournament.routes";
 
 export const config = {
-  runtime: "edge",
+	runtime: "edge",
 };
 
 const app = new Hono().basePath("/api");
 
 app.use(
-  "/*",
-  cors({
-    origin: ["http://localhost:3000"],
-    credentials: true,
-  })
+	"/*",
+	cors({
+		origin: ["http://localhost:3000"],
+		credentials: true,
+	}),
 );
 
 app.route("/auth", authRoutes);
@@ -27,19 +27,19 @@ app.route("/tournaments", tournamentRoutes);
 app.route("/matches", matchesRoutes);
 
 app.get("/health", (c) => {
-  return c.json({ status: "OK", timestamp: new Date().toISOString() });
+	return c.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
 export default handle(app);
 
 if (env.NODE_ENV === "development") {
-  serve(
-    {
-      fetch: app.fetch,
-      port: env.PORT,
-    },
-    (info) => {
-      console.log(`Server is running on http://localhost:${info.port}`);
-    }
-  );
+	serve(
+		{
+			fetch: app.fetch,
+			port: env.PORT,
+		},
+		(info) => {
+			console.log(`Server is running on http://localhost:${info.port}`);
+		},
+	);
 }

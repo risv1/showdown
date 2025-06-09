@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FaGamepad, FaPlay, FaTrophy } from "react-icons/fa";
+import { FaPlay, FaTrophy } from "react-icons/fa";
 import { useNavigate } from "react-router";
 
 export default function Hero() {
@@ -60,15 +60,6 @@ export default function Hero() {
             >
               <FaPlay className="group-hover:translate-x-1 transition-transform" />
               Get Started
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="group border border-neutral-600 hover:border-red-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 flex items-center gap-3 hover:bg-red-500/10"
-            >
-              <FaGamepad className="group-hover:rotate-12 transition-transform" />
-              Learn More
             </motion.button>
           </motion.div>
         </motion.div>
