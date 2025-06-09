@@ -49,3 +49,5 @@ dist-ssr
 *.sw?
 
 postgres_data
+.vercel
+.wrangler

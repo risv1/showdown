@@ -1,5 +1,5 @@
 export const API = {
-  BASE_URL: import.meta.env.API_URL || "http://localhost:8000/api",
+  BASE_URL: import.meta.env.VITE_PUBLIC_API_URL,
   ENDPOINTS: {
     AUTH: {
       BASE_URL: () => "/auth",

@@ -1,8 +1,9 @@
 import { and, desc, eq } from "drizzle-orm";
-import { db } from "../db";
-import { matchPokemon } from "../schema/matchPokemon";
-import { tourMatches } from "../schema/tourMatches";
-import { users } from "../schema/users";
+
+import { db } from "../db.js";
+import { matchPokemon } from "../schema/matchPokemon.js";
+import { tourMatches } from "../schema/tourMatches.js";
+import { users } from "../schema/users.js";
 
 export type CreateMatchData = {
 	tournamentId: number;

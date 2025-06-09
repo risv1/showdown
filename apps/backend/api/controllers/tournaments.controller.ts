@@ -1,8 +1,9 @@
 import type { Context } from "hono";
 import { z } from "zod";
-import { matchesRepository } from "../../database/repositories/matches.repository";
-import { tournamentsRepository } from "../../database/repositories/tournaments.repository";
-import { usersRepository } from "../../database/repositories/users.repository";
+
+import { matchesRepository } from "../../database/repositories/matches.repository.js";
+import { tournamentsRepository } from "../../database/repositories/tournaments.repository.js";
+import { usersRepository } from "../../database/repositories/users.repository.js";
 
 const stageSchema = z.object({
 	name: z.string().min(1).max(100),

@@ -1,11 +1,12 @@
 import { and, count, eq } from "drizzle-orm";
-import { db } from "../db";
-import { teamPokemon } from "../schema/teamPokemon";
-import { tourPlayers } from "../schema/tourPlayers";
-import { tourStages } from "../schema/tourStages";
-import { tourTeams } from "../schema/tourTeams";
-import { tournaments } from "../schema/tournaments";
-import { matchesRepository } from "./matches.repository";
+
+import { db } from "../db.js";
+import { teamPokemon } from "../schema/teamPokemon.js";
+import { tourPlayers } from "../schema/tourPlayers.js";
+import { tourStages } from "../schema/tourStages.js";
+import { tourTeams } from "../schema/tourTeams.js";
+import { tournaments } from "../schema/tournaments.js";
+import { matchesRepository } from "./matches.repository.js";
 
 export class TournamentsRepository {
   async createTournament(data: {

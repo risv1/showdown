@@ -1,20 +1,14 @@
-import bcrypt from "bcryptjs";
+import argon2 from "argon2";
 
-const generateSalt = async (rounds = 10): Promise<string> => {
-	return await bcrypt.genSalt(rounds);
+export const hashPassword = async (password: string): Promise<string> => {
+  return await argon2.hash(password);
 };
 
-export const hashPassword = async (
-	password: string,
-	saltRounds = 10,
-): Promise<string> => {
-	const salt = await generateSalt(saltRounds);
-	return await bcrypt.hash(password, salt);
-};
-
-export const comparePassword = async (
-	password: string,
-	hashedPassword: string,
-): Promise<boolean> => {
-	return await bcrypt.compare(password, hashedPassword);
+export const comparePassword = async (password: string, hash: string): Promise<boolean> => {
+  try {
+    return await argon2.verify(hash, password);
+  } catch (error) {
+    console.error("Password verification failed:", error);
+    return false;
+  }
 };
