@@ -46,14 +46,14 @@ export function EndModal({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 border border-neutral-600 hover:border-neutral-500 text-neutral-300 hover:text-white px-4 py-2 rounded-lg transition-all duration-300 hover:bg-neutral-700/30"
+            className="flex gap-3 items-center w-fit sm:w-auto border border-neutral-500/30 hover:border-neutral-500 text-neutral-400 hover:text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className="flex-1 border border-red-600 hover:border-red-500 text-red-500 hover:text-white px-4 py-2 rounded-lg transition-all duration-300 hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex gap-3 items-center w-fit sm:w-auto border border-red-500/30 hover:border-red-500 text-red-400 hover:text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             {isLoading ? "Processing..." : confirmText}
           </button>

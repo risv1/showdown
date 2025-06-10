@@ -69,8 +69,7 @@ export default function TournamentId() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          localStorage.removeItem("token");
-          sessionStorage.removeItem("token");
+          localStorage.removeItem("authToken");
           navigate("/auth/login");
           return;
         }
@@ -219,7 +218,7 @@ export default function TournamentId() {
 
   return (
     <>
-      <div className="space-y-8 max-w-6xl mx-auto relative">
+      <div className="space-y-6 sm:space-y-8 max-w-6xl mx-auto relative px-4 sm:px-6 lg:px-0">
         {!tournament.isStarted && (
           <TournamentNotStartedOverlay
             tournament={tournament}
@@ -232,31 +231,33 @@ export default function TournamentId() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex items-start justify-between"
+          className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
             <button
               onClick={() => navigate("/dashboard")}
-              className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
+              className="flex-shrink-0 p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors mt-1"
             >
               <FiArrowLeft className="w-5 h-5" />
             </button>
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">{tournament.name}</h1>
-              <div className="flex items-center gap-4">
-                <span className="border border-red-500/30 text-red-400 px-3 py-1 rounded-full text-sm">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 break-words">
+                {tournament.name}
+              </h1>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                <span className="border border-red-500/30 text-red-400 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap">
                   {tournament.format}
                 </span>
-                <span className="text-neutral-400 text-sm">
+                <span className="text-neutral-400 text-xs sm:text-sm whitespace-nowrap">
                   {tournament.currentPlayers}/{tournament.maxPlayers} players
                 </span>
                 {tournament.isCreator && (
-                  <span className="border border-blue-500/30 text-blue-400 px-3 py-1 rounded-full text-sm">
+                  <span className="border border-blue-500/30 text-blue-400 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap">
                     Creator
                   </span>
                 )}
                 {tournament.isEnded && (
-                  <span className="border border-green-500/30 text-green-400 px-3 py-1 rounded-full text-sm">
+                  <span className="border border-green-500/30 text-green-400 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap">
                     Ended
                   </span>
                 )}
@@ -268,7 +269,7 @@ export default function TournamentId() {
             <button
               onClick={() => setShowEndConfirmation(true)}
               disabled={actionLoading}
-              className="border border-red-600 hover:border-red-500 text-red-500 hover:text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex gap-3 items-center w-fit sm:w-auto border border-red-500/30 hover:border-red-500 text-red-400 hover:text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               End Tournament
             </button>
@@ -279,10 +280,14 @@ export default function TournamentId() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6 }}
-          className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-6"
+          className="bg-gradient-to-br from-neutral-900/50 to-neutral-800/50 backdrop-blur-sm border border-neutral-700/50 rounded-xl p-4 sm:p-6"
         >
-          <h2 className="text-xl font-bold text-white mb-4">Tournament Information</h2>
-          <p className="text-neutral-300 leading-relaxed">{tournament.description}</p>
+          <h2 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">
+            Tournament Information
+          </h2>
+          <p className="text-neutral-300 leading-relaxed text-sm sm:text-base">
+            {tournament.description}
+          </p>
         </motion.div>
 
         {tournament.isEnded ? (
