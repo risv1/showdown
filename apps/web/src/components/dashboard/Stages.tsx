@@ -112,15 +112,13 @@ export function TournamentStages({
                         </button>
                       )}
 
-                      {tournament.isCreator && (
-                        <button
-                          onClick={() => onAddMatch(stage)}
-                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 hover:border-red-500 rounded-lg text-red-400 hover:text-red-300 transition-all text-xs sm:text-sm"
-                        >
-                          <FiPlus className="w-3 h-3 sm:w-4 sm:h-4" />
-                          Add Match
-                        </button>
-                      )}
+                      <button
+                        onClick={() => onAddMatch(stage)}
+                        className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 hover:border-red-500 rounded-lg text-red-400 hover:text-red-300 transition-all text-xs sm:text-sm"
+                      >
+                        <FiPlus className="w-3 h-3 sm:w-4 sm:h-4" />
+                        Add Match
+                      </button>
                     </>
                   )}
                 </div>

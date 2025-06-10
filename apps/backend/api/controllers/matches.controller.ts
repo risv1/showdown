@@ -41,10 +41,6 @@ export class MatchesController {
         return c.json({ error: "Tournament not found" }, 404);
       }
 
-      if (tournament.creator !== Number.parseInt(userId)) {
-        return c.json({ error: "Only tournament creator can add matches" }, 403);
-      }
-
       const match = await matchesRepository.createMatch({
         tournamentId,
         stageId,

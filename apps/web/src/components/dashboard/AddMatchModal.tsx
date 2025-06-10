@@ -13,18 +13,27 @@ interface AddMatchModalProps {
 export function AddMatchModal({ stage, onClose, onAddMatch }: AddMatchModalProps) {
   const [replayUrl, setReplayUrl] = useState("");
   const [pointsWon, setPointsWon] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!replayUrl) {
+    if (!replayUrl || isLoading) {
       return;
     }
 
-    onAddMatch(stage.id, {
-      replayUrl,
-      pointsWon: pointsWon || undefined,
-    });
+    setIsLoading(true);
+    try {
+      await onAddMatch(stage.id, {
+        replayUrl,
+        pointsWon: pointsWon || undefined,
+      });
+      onClose();
+    } catch (error) {
+      console.error("Failed to add match:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,7 +55,8 @@ export function AddMatchModal({ stage, onClose, onAddMatch }: AddMatchModalProps
           <h2 className="text-xl font-bold text-white">Add Match to {stage.name}</h2>
           <button
             onClick={onClose}
-            className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-700 rounded-lg transition-colors"
+            disabled={isLoading}
+            className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FiX className="w-5 h-5" />
           </button>
@@ -62,8 +72,9 @@ export function AddMatchModal({ stage, onClose, onAddMatch }: AddMatchModalProps
               value={replayUrl}
               onChange={(e) => setReplayUrl(e.target.value)}
               placeholder="https://replay.pokemonshowdown.com/..."
-              className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white focus:outline-none focus:border-red-500"
+              className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white focus:outline-none focus:border-red-500 disabled:opacity-50"
               required
+              disabled={isLoading}
             />
             <p className="text-xs text-neutral-400 mt-1">
               Players will be automatically detected from the replay
@@ -79,7 +90,8 @@ export function AddMatchModal({ stage, onClose, onAddMatch }: AddMatchModalProps
               value={pointsWon}
               onChange={(e) => setPointsWon(Number(e.target.value))}
               min="0"
-              className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white focus:outline-none focus:border-red-500"
+              className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white focus:outline-none focus:border-red-500 disabled:opacity-50"
+              disabled={isLoading}
             />
           </div>
 
@@ -87,15 +99,17 @@ export function AddMatchModal({ stage, onClose, onAddMatch }: AddMatchModalProps
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
+              disabled={isLoading}
+              className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+              disabled={isLoading}
+              className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Add Match
+              {isLoading ? "Adding Match..." : "Add Match"}
             </button>
           </div>
         </form>
