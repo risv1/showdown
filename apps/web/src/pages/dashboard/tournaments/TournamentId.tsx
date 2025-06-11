@@ -389,21 +389,7 @@ export default function TournamentId() {
     }
   };
 
-  const isLoading = basicLoading || !tournament;
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-white text-lg"
-        >
-          Loading tournament details...
-        </motion.div>
-      </div>
-    );
-  }
+  // const isLoading = basicLoading || !tournament;
 
   if (error || !tournament) {
     return (
