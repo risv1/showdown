@@ -286,6 +286,18 @@ export class TournamentsRepository {
       .returning();
     return tournament;
   }
+
+  async updateStageStatus(stageId: number, started: boolean) {
+    const [stage] = await db
+      .update(tourStages)
+      .set({
+        stageStarted: started,
+        updatedAt: new Date(),
+      })
+      .where(eq(tourStages.id, stageId))
+      .returning();
+    return stage;
+  }
 }
 
 export const tournamentsRepository = new TournamentsRepository();

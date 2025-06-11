@@ -1,5 +1,7 @@
 include:
   - ./compose/postgres.yml
+  - ./compose/redis.yml
+  - ./compose/redis-insight.yml
 
 services: {}
 
@@ -7,6 +9,8 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  redis_insight:
     driver: local
 
 networks:

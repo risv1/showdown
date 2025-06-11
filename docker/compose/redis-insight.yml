@@ -1,0 +1,13 @@
+services:
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis-insight
+    depends_on:
+      - redis
+    restart: always
+    ports:
+      - "5540:5540"
+    volumes:
+      - redis_insight:/data
+    networks:
+      - showdown-network

@@ -25,7 +25,7 @@ export const tourMatches = pgTable("tour_matches", {
     onDelete: "cascade",
   }),
   pointsWon: integer("points_won"),
-  replayUrl: text("replay_url"),
+  replayUrl: text("replay_url").unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

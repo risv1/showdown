@@ -1,5 +1,4 @@
 import type { Context, Next } from "hono";
-import { HTTPException } from "hono/http-exception";
 
 import { verifyJwt } from "../../utils/jwt.utils.js";
 
@@ -8,15 +7,25 @@ export const authMiddleware = async (c: Context, next: Next) => {
     const authHeader = c.req.header("Authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new HTTPException(401, {
-        message: "Authorization header missing or invalid",
-      });
+      return c.json(
+        {
+          success: false,
+          error: "Authorization header missing or invalid",
+        },
+        401
+      );
     }
 
     const token = authHeader.substring(7);
 
     if (!token) {
-      throw new HTTPException(401, { message: "Token missing" });
+      return c.json(
+        {
+          success: false,
+          error: "Token missing",
+        },
+        401
+      );
     }
 
     const decoded = verifyJwt(token);
@@ -24,16 +33,24 @@ export const authMiddleware = async (c: Context, next: Next) => {
     if (typeof decoded === "object" && decoded.userId) {
       c.set("userId", decoded.userId);
     } else {
-      throw new HTTPException(401, { message: "Invalid token payload" });
+      return c.json(
+        {
+          success: false,
+          error: "Invalid token payload",
+        },
+        401
+      );
     }
 
     await next();
   } catch (error) {
-    if (error instanceof HTTPException) {
-      throw error;
-    }
-
     console.error("Auth middleware error:", error);
-    throw new HTTPException(401, { message: "Invalid or expired token" });
+    return c.json(
+      {
+        success: false,
+        error: "Invalid or expired token",
+      },
+      401
+    );
   }
 };

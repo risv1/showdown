@@ -40,6 +40,7 @@ CREATE TABLE "tour_stages" (
 	"name" text NOT NULL,
 	"players_selected" integer NOT NULL,
 	"stage_order" integer NOT NULL,
+  "stage_started" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );

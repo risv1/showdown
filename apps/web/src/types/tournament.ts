@@ -34,6 +34,7 @@ export interface Stage {
   name: string;
   playersSelected: number;
   stageOrder: number;
+  stageStarted: boolean;
   hasTeamSubmitted?: boolean;
   pokemonTeam?: string[];
 }

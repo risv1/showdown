@@ -173,7 +173,7 @@ export const useTournaments = () => {
       const response = await fetch(
         API.BASE_URL +
           API.ENDPOINTS.TOURNAMENTS.BASE_URL() +
-          `/${tournamentId}/stage/${stageId}/team`,
+          API.ENDPOINTS.TOURNAMENTS.GET_STAGE_TEAM(tournamentId, stageId.toString()),
         {
           method: "GET",
           headers: getAuthHeaders(),
@@ -359,6 +359,42 @@ export const useTournaments = () => {
     }
   };
 
+  const updateStageStatus = async (tournamentId: string, stageId: number, started: boolean) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        API.BASE_URL +
+          API.ENDPOINTS.TOURNAMENTS.BASE_URL() +
+          API.ENDPOINTS.TOURNAMENTS.UPDATE_STAGE_STATUS(tournamentId, stageId.toString()),
+        {
+          method: "PATCH",
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ started }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to update stage status");
+      }
+
+      toast.success(
+        `Stage ${started ? "started" : "stopped"} successfully! ${started ? "🚀" : "⏸️"}`
+      );
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to update stage status";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     error,
@@ -373,6 +409,7 @@ export const useTournaments = () => {
     disableJoins,
     startTournament,
     endTournament,
+    updateStageStatus,
     clearError: () => setError(null),
   };
 };

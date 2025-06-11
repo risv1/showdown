@@ -2,6 +2,8 @@ import { handle } from "@hono/node-server/vercel";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
+import { serve } from "@hono/node-server";
+import { env } from "../config/env.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { matchesRoutes } from "./routes/matches.routes.js";
 import { tournamentRoutes } from "./routes/tournament.routes.js";
@@ -32,14 +34,14 @@ const handler = handle(app);
 
 export default handler;
 
-// if (env.NODE_ENV === "development") {
-//   serve(
-//     {
-//       fetch: app.fetch,
-//       port: env.PORT,
-//     },
-//     (info) => {
-//       console.log(`Server is running on http://localhost:${info.port}`);
-//     }
-//   );
-// }
+if (env.NODE_ENV === "development") {
+  serve(
+    {
+      fetch: app.fetch,
+      port: env.PORT,
+    },
+    (info) => {
+      console.log(`Server is running on http://localhost:${info.port}`);
+    }
+  );
+}

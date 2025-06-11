@@ -1,5 +1,7 @@
 import type { Context } from "hono";
 import { z } from "zod";
+
+import { redis } from "../../cache/client.js";
 import { matchesRepository } from "../../database/repositories/matches.repository.js";
 import { tournamentsRepository } from "../../database/repositories/tournaments.repository.js";
 
@@ -47,6 +49,21 @@ export class MatchesController {
         replayUrl: validatedData.replayUrl,
         pointsWon: validatedData.pointsWon,
       });
+
+      const matchesCacheKey = `tournament:matches:${tournamentId}`;
+      await redis.del(matchesCacheKey);
+
+      const playersCacheKey = `tournament:players:${tournamentId}`;
+      await redis.del(playersCacheKey);
+
+      const playerStatsCacheKeys = [
+        `player:stats:${tournamentId}:${match.player1Id}`,
+        `player:stats:${tournamentId}:${match.player2Id}`,
+      ];
+
+      for (const key of playerStatsCacheKeys) {
+        await redis.del(key);
+      }
 
       return c.json({
         message: "Match created successfully",
@@ -147,6 +164,23 @@ export class MatchesController {
       }
 
       const updatedMatch = await matchesRepository.updateMatch(matchId, validatedData);
+
+      const tournamentId = match.tournamentId;
+
+      const matchesCacheKey = `tournament:matches:${tournamentId}`;
+      await redis.del(matchesCacheKey);
+
+      const playersCacheKey = `tournament:players:${tournamentId}`;
+      await redis.del(playersCacheKey);
+
+      const playerStatsCacheKeys = [
+        `player:stats:${tournamentId}:${match.player1Id}`,
+        `player:stats:${tournamentId}:${match.player2Id}`,
+      ];
+
+      for (const key of playerStatsCacheKeys) {
+        await redis.del(key);
+      }
 
       return c.json({
         message: "Match updated successfully",

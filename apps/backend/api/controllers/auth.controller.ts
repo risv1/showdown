@@ -1,6 +1,7 @@
 import type { Context } from "hono";
 import { z } from "zod";
 
+import { redis } from "../../cache/client.js";
 import { usersRepository } from "../../database/repositories/users.repository.js";
 import { comparePassword, hashPassword } from "../../utils/hash.utils.js";
 import { generateJwt } from "../../utils/jwt.utils.js";
@@ -16,6 +17,11 @@ const loginSchema = z.object({
   username: z.string().min(3).max(50),
   password: z.string().min(6).max(100),
 });
+
+const CACHE_TTL = {
+  USER_SESSION: 3600,
+  USER_TOURNAMENTS: 300,
+} as const;
 
 export class AuthController {
   async register(c: Context) {
@@ -50,6 +56,17 @@ export class AuthController {
       });
 
       const token = generateJwt(user.id.toString());
+
+      const userSessionData = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        showdownJoinDate: user.showdownJoinDate,
+        createdAt: user.createdAt,
+      };
+
+      const userCacheKey = `user:session:${user.id}`;
+      await redis.setex(userCacheKey, CACHE_TTL.USER_SESSION, JSON.stringify(userSessionData));
 
       return c.json(
         {
@@ -104,6 +121,17 @@ export class AuthController {
 
       const token = generateJwt(user.id.toString());
 
+      const userSessionData = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        showdownJoinDate: user.showdownJoinDate,
+        createdAt: user.createdAt,
+      };
+
+      const userCacheKey = `user:session:${user.id}`;
+      await redis.setex(userCacheKey, CACHE_TTL.USER_SESSION, JSON.stringify(userSessionData));
+
       return c.json({
         message: "Login successful",
         user: {
@@ -137,6 +165,17 @@ export class AuthController {
         );
       }
 
+      const userCacheKey = `user:session:${userId}`;
+      const cachedUser = await redis.get(userCacheKey);
+
+      if (cachedUser) {
+        const userData = JSON.parse(cachedUser);
+        return c.json({
+          isAuthenticated: true,
+          user: userData,
+        });
+      }
+
       const user = await usersRepository.findById(Number.parseInt(userId));
       if (!user || user.deletedAt) {
         return c.json(
@@ -148,15 +187,19 @@ export class AuthController {
         );
       }
 
+      const userSessionData = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        showdownJoinDate: user.showdownJoinDate,
+        createdAt: user.createdAt,
+      };
+
+      await redis.setex(userCacheKey, CACHE_TTL.USER_SESSION, JSON.stringify(userSessionData));
+
       return c.json({
         isAuthenticated: true,
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          showdownJoinDate: user.showdownJoinDate,
-          createdAt: user.createdAt,
-        },
+        user: userSessionData,
       });
     } catch (error) {
       console.error("Session check error:", error);
