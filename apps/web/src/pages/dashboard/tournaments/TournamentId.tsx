@@ -389,7 +389,22 @@ export default function TournamentId() {
     }
   };
 
-  // const isLoading = basicLoading || !tournament;
+  const isLoading = basicLoading || !tournament;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-white text-lg flex flex-col items-center"
+        >
+          <img src="/images/loader.svg" alt="Loading" className="w-32 h-32 inline-block mr-2" />
+          Loading tournament details...
+        </motion.div>
+      </div>
+    );
+  }
 
   if (error || !tournament) {
     return (
@@ -647,7 +662,13 @@ export default function TournamentId() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg sm:text-xl font-bold text-white">Tournament Stages</h2>
-                <RefreshButton isRefreshing={refreshingStages} onRefresh={handleRefreshStages} />
+                <RefreshButton
+                  isRefreshing={refreshingStages}
+                  onRefresh={() => {
+                    handleRefreshStages();
+                    handleRefreshMatches();
+                  }}
+                />
               </div>
               <TournamentStages
                 isLoading={stagesLoading}
