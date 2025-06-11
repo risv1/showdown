@@ -17,6 +17,12 @@ const updateMatchSchema = z.object({
   replayUrl: z.string().url().optional(),
 });
 
+const CACHE_TTL = {
+  TOURNAMENT_MATCHES: 86400,
+  TOURNAMENT_PLAYERS: 86400,
+  PLAYER_STATS: 86400,
+} as const;
+
 export class MatchesController {
   async createMatch(c: Context) {
     try {
@@ -50,12 +56,21 @@ export class MatchesController {
         pointsWon: validatedData.pointsWon,
       });
 
-      const matchesCacheKey = `tournament:matches:${tournamentId}`;
       const redis = getRedis();
-      await redis.del(matchesCacheKey);
 
-      const playersCacheKey = `tournament:players:${tournamentId}`;
-      await redis.del(playersCacheKey);
+      const matchesCacheKey = `tournament:matches:${tournamentId}`;
+      const cachedMatches = await redis.get(matchesCacheKey);
+      if (cachedMatches) {
+        const matches = cachedMatches as any;
+        const pokemon = await matchesRepository.getMatchPokemon(match.id);
+        const matchWithPokemon = { ...match, pokemon };
+        const updatedMatches = [matchWithPokemon, ...matches];
+        await redis.setex(
+          matchesCacheKey,
+          CACHE_TTL.TOURNAMENT_MATCHES,
+          JSON.stringify(updatedMatches)
+        );
+      }
 
       const playerStatsCacheKeys = [
         `player:stats:${tournamentId}:${match.player1Id}`,
@@ -63,7 +78,51 @@ export class MatchesController {
       ];
 
       for (const key of playerStatsCacheKeys) {
-        await redis.del(key);
+        const cachedStats = await redis.get(key);
+        if (cachedStats) {
+          const playerId = key.split(":")[3];
+          const freshStats = await matchesRepository.getPlayerStats(
+            tournamentId,
+            Number.parseInt(playerId)
+          );
+          await redis.setex(key, CACHE_TTL.PLAYER_STATS, JSON.stringify(freshStats));
+        }
+      }
+
+      const playersCacheKey = `tournament:players:${tournamentId}`;
+      const cachedPlayers = await redis.get(playersCacheKey);
+      if (cachedPlayers) {
+        const players = cachedPlayers as any;
+        const updatedPlayers = await Promise.all(
+          players.map(async (player: any) => {
+            if (player.id === match.player1Id || player.id === match.player2Id) {
+              const stats = await matchesRepository.getPlayerStats(tournamentId, player.id);
+              return {
+                ...player,
+                wins: stats.wins,
+                losses: stats.losses,
+                points: stats.points,
+              };
+            }
+            return player;
+          })
+        );
+
+        updatedPlayers.sort((a, b) => {
+          if (b.wins !== a.wins) return b.wins - a.wins;
+          return b.points - a.points;
+        });
+
+        const rankedPlayers = updatedPlayers.map((player, index) => ({
+          ...player,
+          rank: index + 1,
+        }));
+
+        await redis.setex(
+          playersCacheKey,
+          CACHE_TTL.TOURNAMENT_PLAYERS,
+          JSON.stringify(rankedPlayers)
+        );
       }
 
       return c.json({
@@ -112,6 +171,17 @@ export class MatchesController {
         return c.json({ error: "Invalid tournament ID" }, 400);
       }
 
+      const refresh = c.req.query("refresh") === "true";
+      const cacheKey = `tournament:matches:${tournamentId}`;
+      const redis = getRedis();
+
+      if (!refresh) {
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+          return c.json({ matches: cached as any });
+        }
+      }
+
       const matches = await matchesRepository.getTournamentMatches(tournamentId);
 
       const matchesWithPokemon = await Promise.all(
@@ -123,6 +193,8 @@ export class MatchesController {
           };
         })
       );
+
+      await redis.setex(cacheKey, CACHE_TTL.TOURNAMENT_MATCHES, JSON.stringify(matchesWithPokemon));
 
       return c.json({ matches: matchesWithPokemon });
     } catch (error) {
@@ -167,13 +239,25 @@ export class MatchesController {
       const updatedMatch = await matchesRepository.updateMatch(matchId, validatedData);
 
       const tournamentId = match.tournamentId;
+      const redis = getRedis();
 
       const matchesCacheKey = `tournament:matches:${tournamentId}`;
-      const redis = getRedis();
-      await redis.del(matchesCacheKey);
+      const cachedMatches = await redis.get(matchesCacheKey);
+      if (cachedMatches) {
+        const matches = cachedMatches as any;
+        const pokemon = await matchesRepository.getMatchPokemon(matchId);
+        const updatedMatchWithPokemon = { ...updatedMatch, pokemon };
 
-      const playersCacheKey = `tournament:players:${tournamentId}`;
-      await redis.del(playersCacheKey);
+        const updatedMatches = matches.map((m: any) =>
+          m.id === matchId ? updatedMatchWithPokemon : m
+        );
+
+        await redis.setex(
+          matchesCacheKey,
+          CACHE_TTL.TOURNAMENT_MATCHES,
+          JSON.stringify(updatedMatches)
+        );
+      }
 
       const playerStatsCacheKeys = [
         `player:stats:${tournamentId}:${match.player1Id}`,
@@ -181,7 +265,51 @@ export class MatchesController {
       ];
 
       for (const key of playerStatsCacheKeys) {
-        await redis.del(key);
+        const cachedStats = await redis.get(key);
+        if (cachedStats) {
+          const playerId = key.split(":")[3];
+          const freshStats = await matchesRepository.getPlayerStats(
+            tournamentId,
+            Number.parseInt(playerId)
+          );
+          await redis.setex(key, CACHE_TTL.PLAYER_STATS, JSON.stringify(freshStats));
+        }
+      }
+
+      const playersCacheKey = `tournament:players:${tournamentId}`;
+      const cachedPlayers = await redis.get(playersCacheKey);
+      if (cachedPlayers) {
+        const players = cachedPlayers as any;
+        const updatedPlayers = await Promise.all(
+          players.map(async (player: any) => {
+            if (player.id === match.player1Id || player.id === match.player2Id) {
+              const stats = await matchesRepository.getPlayerStats(tournamentId, player.id);
+              return {
+                ...player,
+                wins: stats.wins,
+                losses: stats.losses,
+                points: stats.points,
+              };
+            }
+            return player;
+          })
+        );
+
+        updatedPlayers.sort((a, b) => {
+          if (b.wins !== a.wins) return b.wins - a.wins;
+          return b.points - a.points;
+        });
+
+        const rankedPlayers = updatedPlayers.map((player, index) => ({
+          ...player,
+          rank: index + 1,
+        }));
+
+        await redis.setex(
+          playersCacheKey,
+          CACHE_TTL.TOURNAMENT_PLAYERS,
+          JSON.stringify(rankedPlayers)
+        );
       }
 
       return c.json({

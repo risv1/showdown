@@ -20,7 +20,7 @@ const loginSchema = z.object({
 
 const CACHE_TTL = {
   USER_SESSION: 3600,
-  USER_TOURNAMENTS: 300,
+  USER_TOURNAMENTS: 86400,
 } as const;
 
 export class AuthController {

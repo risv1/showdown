@@ -29,13 +29,12 @@ const updateStageStatusSchema = z.object({
 });
 
 const CACHE_TTL = {
-  TOURNAMENT_BASIC: 600,
-  TOURNAMENT_STAGES: 600,
-  TOURNAMENT_PLAYERS: 600,
-  TOURNAMENT_MATCHES: 600,
-  PLAYER_STATS: 600,
-  USER_TOURNAMENTS: 600,
-  STAGE_TEAM: 600,
+  TOURNAMENT_BASIC: 86400,
+  TOURNAMENT_STAGES: 86400,
+  TOURNAMENT_PLAYERS: 86400,
+  PLAYER_STATS: 86400,
+  USER_TOURNAMENTS: 86400,
+  STAGE_TEAM: 86400,
 } as const;
 
 export class TournamentsController {
@@ -728,68 +727,6 @@ export class TournamentsController {
       });
     } catch (error) {
       console.error("Get tournament players error:", error);
-      return c.json({ error: "Internal server error" }, 500);
-    }
-  }
-
-  async getTournamentMatches(c: Context) {
-    try {
-      const userId = c.get("userId");
-      if (!userId) {
-        return c.json({ error: "Unauthorized" }, 401);
-      }
-
-      const tournamentId = Number.parseInt(c.req.param("id"));
-      if (!tournamentId) {
-        return c.json({ error: "Invalid tournament ID" }, 400);
-      }
-
-      const refresh = c.req.query("refresh") === "true";
-      const cacheKey = `tournament:matches:${tournamentId}`;
-      const redis = getRedis();
-
-      if (!refresh) {
-        const cached = await redis.get(cacheKey);
-        if (cached) {
-          return c.json({
-            matches: cached as any,
-          });
-        }
-      }
-
-      const tournament = await tournamentsRepository.findById(tournamentId);
-      if (!tournament) {
-        return c.json({ error: "Tournament not found" }, 404);
-      }
-
-      const isParticipating = await tournamentsRepository.isPlayerInTournament(
-        tournamentId,
-        Number.parseInt(userId)
-      );
-
-      if (!isParticipating && tournament.creator !== Number.parseInt(userId)) {
-        return c.json({ error: "Not authorized to view tournament matches" }, 403);
-      }
-
-      const matches = await matchesRepository.getTournamentMatches(tournamentId);
-
-      const matchesWithPokemon = await Promise.all(
-        matches.map(async (match) => {
-          const pokemon = await matchesRepository.getMatchPokemon(match.id);
-          return {
-            ...match,
-            pokemon,
-          };
-        })
-      );
-
-      await redis.setex(cacheKey, CACHE_TTL.TOURNAMENT_MATCHES, JSON.stringify(matchesWithPokemon));
-
-      return c.json({
-        matches: matchesWithPokemon,
-      });
-    } catch (error) {
-      console.error("Get tournament matches error:", error);
       return c.json({ error: "Internal server error" }, 500);
     }
   }

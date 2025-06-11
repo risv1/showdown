@@ -36,14 +36,28 @@ export function PlayerModal({ player, onClose, tournamentStages }: PlayerModalPr
   };
 
   const getAllPokemon = () => {
-    if (!player.stageTeams) return [];
+    if (!player.stageTeams || !tournamentStages) return [];
 
-    const allPokemon = new Set<string>();
-    Object.values(player.stageTeams).forEach((team) => {
-      team.forEach((pokemon) => allPokemon.add(pokemon));
+    const sortedStages = tournamentStages
+      .filter((stage) => player.stageTeams?.[stage.id])
+      .sort((a, b) => b.id - a.id);
+
+    const allPokemon: string[] = [];
+    const seenPokemon = new Set<string>();
+
+    sortedStages.forEach((stage) => {
+      const stageTeam = player.stageTeams?.[stage.id];
+      if (stageTeam) {
+        stageTeam.forEach((pokemon) => {
+          if (!seenPokemon.has(pokemon)) {
+            allPokemon.push(pokemon);
+            seenPokemon.add(pokemon);
+          }
+        });
+      }
     });
 
-    return Array.from(allPokemon);
+    return allPokemon;
   };
 
   const allPokemon = getAllPokemon();

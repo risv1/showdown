@@ -15,7 +15,6 @@ tournamentRoutes.get("/:id", (c) => tournamentsController.getTournament(c));
 tournamentRoutes.get("/:id/basic", (c) => tournamentsController.getTournamentBasic(c));
 tournamentRoutes.get("/:id/stages", (c) => tournamentsController.getTournamentStages(c));
 tournamentRoutes.get("/:id/players", (c) => tournamentsController.getTournamentPlayers(c));
-tournamentRoutes.get("/:id/matches", (c) => tournamentsController.getTournamentMatches(c));
 
 tournamentRoutes.post("/:id/join", (c) => tournamentsController.joinTournament(c));
 tournamentRoutes.post("/:id/stage-team", (c) => tournamentsController.submitStageTeam(c));
