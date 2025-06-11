@@ -1,7 +1,7 @@
 import type { Context } from "hono";
 import { z } from "zod";
 
-import { redis } from "../../cache/client.js";
+import { getRedis } from "../../cache/client.js";
 import { usersRepository } from "../../database/repositories/users.repository.js";
 import { comparePassword, hashPassword } from "../../utils/hash.utils.js";
 import { generateJwt } from "../../utils/jwt.utils.js";
@@ -65,6 +65,7 @@ export class AuthController {
         createdAt: user.createdAt,
       };
 
+      const redis = getRedis();
       const userCacheKey = `user:session:${user.id}`;
       await redis.setex(userCacheKey, CACHE_TTL.USER_SESSION, JSON.stringify(userSessionData));
 
@@ -130,6 +131,7 @@ export class AuthController {
       };
 
       const userCacheKey = `user:session:${user.id}`;
+      const redis = getRedis();
       await redis.setex(userCacheKey, CACHE_TTL.USER_SESSION, JSON.stringify(userSessionData));
 
       return c.json({
@@ -166,10 +168,11 @@ export class AuthController {
       }
 
       const userCacheKey = `user:session:${userId}`;
+      const redis = getRedis();
       const cachedUser = await redis.get(userCacheKey);
 
       if (cachedUser) {
-        const userData = JSON.parse(cachedUser);
+        const userData = cachedUser;
         return c.json({
           isAuthenticated: true,
           user: userData,

@@ -1,7 +1,7 @@
 import type { Context } from "hono";
 import { z } from "zod";
 
-import { redis } from "../../cache/client.js";
+import { getRedis } from "../../cache/client.js";
 import { matchesRepository } from "../../database/repositories/matches.repository.js";
 import { tournamentsRepository } from "../../database/repositories/tournaments.repository.js";
 import { usersRepository } from "../../database/repositories/users.repository.js";
@@ -143,6 +143,7 @@ export class TournamentsController {
       }
 
       const userTournamentsCacheKey = `user:tournaments:${userId}`;
+      const redis = getRedis();
       const cachedTournaments = await redis.get(userTournamentsCacheKey);
 
       if (cachedTournaments) {
@@ -159,7 +160,7 @@ export class TournamentsController {
       const basicCacheKey = `tournament:basic:${tournamentId}`;
       const cachedBasic = await redis.get(basicCacheKey);
       if (cachedBasic) {
-        const basicData = JSON.parse(cachedBasic);
+        const basicData = cachedBasic as any;
         const updatedBasic = {
           ...basicData,
           currentPlayers: newPlayerCount,
@@ -227,13 +228,14 @@ export class TournamentsController {
         stageId: validatedData.stageId,
         pokemonTeam: validatedData.pokemonTeam,
       };
+      const redis = getRedis();
       await redis.setex(stageTeamCacheKey, CACHE_TTL.STAGE_TEAM, JSON.stringify(stageTeamData));
 
       const playersCacheKey = `tournament:players:${tournamentId}`;
       const cachedPlayers = await redis.get(playersCacheKey);
 
       if (cachedPlayers) {
-        const players = JSON.parse(cachedPlayers);
+        const players = cachedPlayers as any;
         const updatedPlayers = players.map((player: any) => {
           if (player.id === Number.parseInt(userId)) {
             return {
@@ -284,11 +286,12 @@ export class TournamentsController {
 
       const refresh = c.req.query("refresh") === "true";
       const cacheKey = `stage:team:${tournamentId}:${userId}:${stageId}`;
+      const redis = getRedis();
 
       if (!refresh) {
         const cached = await redis.get(cacheKey);
         if (cached) {
-          return c.json(JSON.parse(cached));
+          return c.json(cached as any);
         }
       }
 
@@ -364,12 +367,13 @@ export class TournamentsController {
 
       const refresh = c.req.query("refresh") === "true";
       const userTournamentsCacheKey = `user:tournaments:${userId}`;
+      const redis = getRedis();
 
       if (!refresh) {
         const cachedTournaments = await redis.get(userTournamentsCacheKey);
         if (cachedTournaments) {
           return c.json({
-            tournaments: JSON.parse(cachedTournaments),
+            tournaments: cachedTournaments as any,
           });
         }
       }
@@ -515,11 +519,12 @@ export class TournamentsController {
 
       const refresh = c.req.query("refresh") === "true";
       const cacheKey = `tournament:basic:${tournamentId}`;
+      const redis = getRedis();
 
       if (!refresh) {
         const cached = await redis.get(cacheKey);
         if (cached) {
-          const cachedData = JSON.parse(cached);
+          const cachedData = cached as any;
           return c.json({
             tournament: {
               ...cachedData,
@@ -578,12 +583,13 @@ export class TournamentsController {
 
       const refresh = c.req.query("refresh") === "true";
       const cacheKey = `tournament:stages:${tournamentId}`;
+      const redis = getRedis();
 
       if (!refresh) {
         const cached = await redis.get(cacheKey);
         if (cached) {
           return c.json({
-            stages: JSON.parse(cached),
+            stages: cached as any,
           });
         }
       }
@@ -629,11 +635,12 @@ export class TournamentsController {
 
       const refresh = c.req.query("refresh") === "true";
       const cacheKey = `tournament:players:${tournamentId}`;
+      const redis = getRedis();
 
       if (!refresh) {
         const cached = await redis.get(cacheKey);
         if (cached) {
-          const cachedData = JSON.parse(cached);
+          const cachedData = cached as any;
           const playersWithCurrentUser = cachedData.map((player: any) => ({
             ...player,
             isCurrentUser: player.id === Number.parseInt(userId),
@@ -668,7 +675,7 @@ export class TournamentsController {
             const playerStatsCacheKey = `player:stats:${tournamentId}:${player.userId}`;
             const cachedStats = await redis.get(playerStatsCacheKey);
             if (cachedStats) {
-              stats = JSON.parse(cachedStats);
+              stats = cachedStats as any;
             } else {
               stats = await matchesRepository.getPlayerStats(tournamentId, player.userId);
               await redis.setex(playerStatsCacheKey, CACHE_TTL.PLAYER_STATS, JSON.stringify(stats));
@@ -739,12 +746,13 @@ export class TournamentsController {
 
       const refresh = c.req.query("refresh") === "true";
       const cacheKey = `tournament:matches:${tournamentId}`;
+      const redis = getRedis();
 
       if (!refresh) {
         const cached = await redis.get(cacheKey);
         if (cached) {
           return c.json({
-            matches: JSON.parse(cached),
+            matches: cached as any,
           });
         }
       }
@@ -878,10 +886,11 @@ export class TournamentsController {
       });
 
       const basicCacheKey = `tournament:basic:${tournamentId}`;
+      const redis = getRedis();
       const cachedBasic = await redis.get(basicCacheKey);
 
       if (cachedBasic) {
-        const basicData = JSON.parse(cachedBasic);
+        const basicData = cachedBasic as any;
         const updatedBasic = {
           ...basicData,
           isStarted: true,
@@ -993,10 +1002,11 @@ export class TournamentsController {
       await tournamentsRepository.endTournament(tournamentId);
 
       const basicCacheKey = `tournament:basic:${tournamentId}`;
+      const redis = getRedis();
       const cachedBasic = await redis.get(basicCacheKey);
 
       if (cachedBasic) {
-        const basicData = JSON.parse(cachedBasic);
+        const basicData = cachedBasic;
         const updatedBasic = {
           ...basicData,
           isEnded: true,
@@ -1050,10 +1060,11 @@ export class TournamentsController {
       await tournamentsRepository.updateStageStatus(stageId, started);
 
       const stagesCacheKey = `tournament:stages:${tournamentId}`;
+      const redis = getRedis();
       const cachedStages = await redis.get(stagesCacheKey);
 
       if (cachedStages) {
-        const stages = JSON.parse(cachedStages);
+        const stages = cachedStages as any;
         const updatedStages = stages.map((stage: any) => {
           if (stage.id === stageId) {
             return {

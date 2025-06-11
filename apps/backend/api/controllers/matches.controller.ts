@@ -1,7 +1,7 @@
 import type { Context } from "hono";
 import { z } from "zod";
 
-import { redis } from "../../cache/client.js";
+import { getRedis } from "../../cache/client.js";
 import { matchesRepository } from "../../database/repositories/matches.repository.js";
 import { tournamentsRepository } from "../../database/repositories/tournaments.repository.js";
 
@@ -51,6 +51,7 @@ export class MatchesController {
       });
 
       const matchesCacheKey = `tournament:matches:${tournamentId}`;
+      const redis = getRedis();
       await redis.del(matchesCacheKey);
 
       const playersCacheKey = `tournament:players:${tournamentId}`;
@@ -168,6 +169,7 @@ export class MatchesController {
       const tournamentId = match.tournamentId;
 
       const matchesCacheKey = `tournament:matches:${tournamentId}`;
+      const redis = getRedis();
       await redis.del(matchesCacheKey);
 
       const playersCacheKey = `tournament:players:${tournamentId}`;

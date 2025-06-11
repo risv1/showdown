@@ -6,6 +6,7 @@
       "dependencies": {
         "@hono/node-server": "^1.14.4",
         "@types/jsonwebtoken": "^9.0.9",
+        "@upstash/redis": "^1.35.0",
         "argon2": "^0.43.0",
         "dotenv": "^16.5.0",
         "drizzle-kit": "^0.31.1",
@@ -109,6 +110,8 @@
 
     "@types/node": ["@types/node@22.15.30", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-6Q7lr06bEHdlfplU6YRbgG1SFBdlsfNC4/lX+SkhiTs0cpJkOElmWls8PxDFv4yY/xKb8Y6SO0OmSX4wgqTZbA=="],
 
+    "@upstash/redis": ["@upstash/redis@1.35.0", "", { "dependencies": { "uncrypto": "^0.1.3" } }, "sha512-WUm0Jz1xN4DBDGeJIi2Y0kVsolWRB2tsVds4SExaiLg4wBdHFMB+8IfZtBWr+BP0FvhuBr5G1/VLrJ9xzIWHsg=="],
+
     "argon2": ["argon2@0.43.0", "", { "dependencies": { "@phc/format": "^1.0.0", "node-addon-api": "^8.3.1", "node-gyp-build": "^4.8.4" } }, "sha512-u/HKLcbWShVDhkfwI4hWyiUf3qyX8QhTfaIv2cWE18uqhXCmR5hb6Ed7oqYi2KCQegeAnRhiFzbjzm7i5yl1GA=="],
 
     "buffer-equal-constant-time": ["buffer-equal-constant-time@1.0.1", "", {}, "sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA=="],
@@ -190,6 +193,8 @@
     "standard-as-callback": ["standard-as-callback@2.1.0", "", {}, "sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A=="],
 
     "tsx": ["tsx@4.19.4", "", { "dependencies": { "esbuild": "~0.25.0", "get-tsconfig": "^4.7.5" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "bin": { "tsx": "dist/cli.mjs" } }, "sha512-gK5GVzDkJK1SI1zwHf32Mqxf2tSJkNx+eYcNly5+nHvWqXUJYUkWBQtKauoESz3ymezAI++ZwT855x5p5eop+Q=="],
+
+    "uncrypto": ["uncrypto@0.1.3", "", {}, "sha512-Ql87qFHB3s/De2ClA9e0gsnS6zXG27SkTiSJwjCc9MebbfapQfuPzumMIUMi38ezPZVNFcHI9sUIepeQfw8J8Q=="],
 
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
 

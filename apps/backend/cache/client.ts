@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import { Redis } from "@upstash/redis";
 
 import { env } from "../config/env.js";
 
@@ -6,22 +6,9 @@ let redisClient: Redis | null = null;
 
 export const getRedisClient = (): Redis => {
   if (!redisClient) {
-    redisClient = new Redis(env.REDIS_URL, {
-      enableOfflineQueue: false,
-      maxRetriesPerRequest: 3,
-      lazyConnect: false,
-    });
-
-    redisClient.on("connect", () => {
-      console.log("✅ Redis connected successfully");
-    });
-
-    redisClient.on("error", (error) => {
-      console.error("❌ Redis connection error:", error);
-    });
-
-    redisClient.on("ready", () => {
-      console.log("🚀 Redis is ready to accept commands");
+    redisClient = new Redis({
+      url: env.REDIS_URL,
+      token: env.REDIS_TOKEN,
     });
   }
 
@@ -29,10 +16,7 @@ export const getRedisClient = (): Redis => {
 };
 
 export const disconnectRedis = async (): Promise<void> => {
-  if (redisClient) {
-    await redisClient.quit();
-    redisClient = null;
-  }
+  redisClient = null;
 };
 
-export const redis = getRedisClient();
+export const getRedis = () => getRedisClient();
